@@ -6,7 +6,6 @@ import BentoServices from './components/BentoServices';
 import WhyShanva from './components/WhyShanva';
 import ProcessTimeline from './components/ProcessTimeline';
 import AnalyticsDashboard from './components/AnalyticsDashboard';
-import Portfolio from './components/Portfolio';
 import Results from './components/Results';
 import Testimonials from './components/Testimonials';
 import Industries from './components/Industries';
@@ -18,7 +17,6 @@ import { INTEGRATION_CONFIG } from './config';
 
 export default function App() {
   const ctaRef = useRef<HTMLDivElement>(null);
-  const portfolioRef = useRef<HTMLDivElement>(null);
 
   const scrollToCTA = () => {
     if (INTEGRATION_CONFIG.preferCalendly) {
