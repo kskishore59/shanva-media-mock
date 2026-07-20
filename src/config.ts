@@ -12,5 +12,5 @@ export const INTEGRATION_CONFIG = {
 
   // Paste your Google Sheets Webhook URL, SheetDB URL, or Formspree endpoint here.
   // When visitors submit the inquiry form, the data is POSTed to this endpoint.
-  googleSheetsWebhookUrl: "https://script.google.com/macros/s/AKfycbzMockAppScriptWebhook/exec",
+  googleSheetsWebhookUrl: "https://script.google.com/macros/s/AKfycbzvQStAQBcwg_1Jt-MHksT24oQAtm8yknL-jHsDwXN8rB87PDRRFRRONXlboN-4qzfi-g/exec",
 };

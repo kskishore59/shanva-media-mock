@@ -33,31 +33,45 @@ export default function CTASection({ formRef }: CTASectionProps) {
     setLoading(true);
     setErrorMsg('');
 
+    // Format WhatsApp message
+    const waNumber = '918977687916';
+    const textMessage = `Hello Shanva Media, I'd like to talk about a project!\n\n` +
+      `*Name:* ${projectData.name}\n` +
+      `*Brand Name:* ${projectData.brandName}\n` +
+      `*Email:* ${projectData.email}\n` +
+      `*Phone:* ${projectData.phone}\n` +
+      `*Industry:* ${projectData.industry}\n` +
+      `*Service Needed:* ${projectData.serviceNeeded}\n` +
+      `*Budget Range:* ${projectData.budgetRange}\n` +
+      `*Timeline:* ${projectData.timeline}\n` +
+      `*Details:* ${projectData.details}`;
+    const waUrl = `https://wa.me/${waNumber}?text=${encodeURIComponent(textMessage)}`;
+
     try {
-      await fetch(INTEGRATION_CONFIG.googleSheetsWebhookUrl, {
+      const response = await fetch(INTEGRATION_CONFIG.googleSheetsWebhookUrl, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ type: 'project_brief', ...projectData }),
-        mode: 'cors',
+        headers: { 'Content-Type': 'text/plain' }, // Using text/plain is safer for CORS
+        body: JSON.stringify({ type: 'project_brief', ...projectData })
       });
+
+      if (!response.ok) {
+        throw new Error(`Server returned status ${response.status}`);
+      }
+
       setLoading(false);
       setSubmitted(true);
       triggerConfetti();
-    } catch {
-      try {
-        await fetch(INTEGRATION_CONFIG.googleSheetsWebhookUrl, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ type: 'project_brief', ...projectData }),
-        });
-        setLoading(false);
-        setSubmitted(true);
-        triggerConfetti();
-      } catch {
-        setLoading(false);
-        setErrorMsg('Failed to submit form. Please email us directly.');
-      }
+      
+      // Delay redirection slightly so the user sees the success state and confetti
+      setTimeout(() => {
+        window.open(waUrl, '_blank', 'noopener,noreferrer');
+      }, 1500);
+    } catch (err) {
+      console.error('Form submission failed:', err);
+      setLoading(false);
+      setErrorMsg(
+        'Failed to log brief in Google Sheets. Please ensure your Web App is deployed with "Who has access: Anyone" or email us directly.'
+      );
     }
   };
 
