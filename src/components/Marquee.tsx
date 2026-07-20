@@ -14,21 +14,21 @@ export default function Marquee() {
     { icon: <Activity className="w-5 h-5" />, text: "AUDIENCE-DRIVEN GROWTH" },
   ];
 
-  // Duplicate items for infinite scroll
   const scrollerItems = [...items, ...items];
 
   return (
-    <div className="w-full bg-[#08080a] border-y border-border py-8 overflow-hidden relative">
-      <div className="absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
-      <div className="absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
+    <div className="w-full bg-white border-y border-zinc-200/80 py-6 sm:py-8 overflow-hidden relative">
+      {/* Wider fade masks */}
+      <div className="absolute inset-y-0 left-0 w-16 sm:w-32 bg-gradient-to-r from-background to-transparent z-10 pointer-events-none" />
+      <div className="absolute inset-y-0 right-0 w-16 sm:w-32 bg-gradient-to-l from-background to-transparent z-10 pointer-events-none" />
       
       <div className="flex w-max animate-marquee-slow">
         {scrollerItems.map((item, idx) => (
           <div
             key={idx}
-            className="flex items-center gap-3 mx-10 text-muted/50 hover:text-primary transition-all duration-300 cursor-pointer group"
+            className="flex items-center gap-2 sm:gap-3 mx-5 sm:mx-8 md:mx-10 text-muted/40 hover:text-primary transition-all duration-400 cursor-pointer group"
           >
-            <div className="p-2 rounded-xl bg-zinc-950 border border-white/5 group-hover:border-primary/20 group-hover:bg-primary/5 transition-all duration-300">
+            <div className="p-2.5 rounded-xl bg-zinc-50 border border-zinc-200/60 group-hover:border-primary/20 group-hover:bg-primary/[0.06] group-hover:shadow-glow-sm transition-all duration-400">
               {item.icon}
             </div>
             <span className="font-heading font-extrabold text-sm tracking-[0.2em] whitespace-nowrap">

@@ -63,36 +63,48 @@ export default function Testimonials() {
   }, []);
 
   return (
-    <section className="py-24 bg-[#09090b] relative overflow-hidden" id="testimonials">
-      {/* Background radial blurs */}
-      <div className="absolute right-0 top-1/2 w-96 h-96 rounded-full bg-primary/5 filter blur-3xl pointer-events-none" />
+    <section className="py-20 sm:py-28 md:py-36 bg-background relative overflow-hidden section-glow-divider" id="testimonials">
+      {/* Background radial blurs — bigger */}
+      <div className="absolute right-0 top-1/2 w-[500px] h-[500px] rounded-full bg-primary/[0.04] filter blur-[120px] pointer-events-none" />
 
       <div className="max-w-5xl mx-auto px-6">
         {/* Header */}
-        <div className="text-center mb-16 space-y-4">
-          <span className="text-xs font-bold uppercase tracking-[0.25em] text-primary">
+        <div className="text-center mb-16 md:mb-20 space-y-4">
+          <motion.span
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-xs font-bold uppercase tracking-[0.3em] text-primary"
+          >
             Client Success
-          </span>
-          <h2 className="text-4xl sm:text-5xl font-extrabold font-heading text-text">
+          </motion.span>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ type: 'spring', stiffness: 80, damping: 14, delay: 0.1 }}
+            className="text-4xl sm:text-5xl md:text-6xl font-extrabold font-heading text-text tracking-[-0.04em]"
+          >
             Loved by Builders & Brands
-          </h2>
+          </motion.h2>
         </div>
 
         {/* Testimonials Card Shell */}
         <div className="relative">
-          {/* Quote Mark Icon */}
-          <div className="absolute -top-10 -left-6 md:-left-12 text-zinc-800 opacity-20 pointer-events-none select-none">
-            <Quote className="w-24 h-24 stroke-[1.5]" />
+          {/* Quote Mark — bigger, more subtle */}
+          <div className="absolute -top-8 -left-4 sm:-top-12 sm:-left-8 md:-left-14 text-zinc-200/50 pointer-events-none select-none">
+            <Quote className="w-16 h-16 sm:w-28 sm:h-28 md:w-32 md:h-32 stroke-[1]" />
           </div>
 
           <AnimatePresence mode="wait">
             <motion.div
               key={activeIdx}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.4 }}
-              className="glass-card rounded-[32px] p-8 md:p-12 border border-white/5 relative overflow-hidden group glow-border"
+              initial={{ opacity: 0, x: 25, scale: 0.98 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              exit={{ opacity: 0, x: -25, scale: 0.98 }}
+              transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+              className="glass-card rounded-[28px] p-8 md:p-12 relative overflow-hidden group glow-border shadow-layered"
             >
               <div className="space-y-8">
                 {/* Rating & Metric */}
@@ -102,23 +114,23 @@ export default function Testimonials() {
                       <Star key={i} className="w-4 h-4 fill-amber-400 text-amber-400" />
                     ))}
                   </div>
-                  <span className="px-3.5 py-1 rounded-full bg-primary/10 border border-primary/20 text-xs font-bold text-primary">
+                  <span className="px-4 py-1.5 rounded-full badge-pill text-xs font-bold text-primary">
                     {testimonials[activeIdx].metric}
                   </span>
                 </div>
 
                 {/* Quote Text */}
-                <p className="text-lg md:text-xl text-zinc-100 font-light leading-relaxed italic">
+                <p className="text-lg md:text-xl text-text font-light leading-[1.7] italic tracking-[-0.01em]">
                   "{testimonials[activeIdx].quote}"
                 </p>
 
                 {/* Profile Row */}
-                <div className="flex items-center gap-4 pt-4 border-t border-white/5">
-                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-primary to-secondary flex items-center justify-center font-heading font-extrabold text-sm text-text shadow-md">
+                <div className="flex items-center gap-4 pt-5 border-t border-zinc-200/80">
+                  <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-primary to-secondary flex items-center justify-center font-heading font-extrabold text-sm text-white shadow-glow-sm">
                     {testimonials[activeIdx].avatar}
                   </div>
                   <div>
-                    <h4 className="text-base font-extrabold text-text font-heading">
+                    <h4 className="text-base font-extrabold text-text font-heading tracking-[-0.02em]">
                       {testimonials[activeIdx].name}
                     </h4>
                     <p className="text-xs text-muted">
@@ -132,30 +144,28 @@ export default function Testimonials() {
 
           {/* Slider Controls */}
           <div className="flex justify-between items-center mt-8 px-2">
-            {/* Dots */}
             <div className="flex gap-2">
               {testimonials.map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => setActiveIdx(idx)}
-                  className={`h-2 rounded-full transition-all duration-300 ${
-                    activeIdx === idx ? 'w-8 bg-primary' : 'w-2 bg-zinc-800 hover:bg-zinc-700'
+                  className={`h-2 rounded-full transition-all duration-400 ${
+                    activeIdx === idx ? 'w-8 bg-gradient-to-r from-primary to-secondary' : 'w-2 bg-zinc-200 hover:bg-zinc-300'
                   }`}
                 />
               ))}
             </div>
 
-            {/* Prev/Next Buttons */}
             <div className="flex gap-3">
               <button
                 onClick={handlePrev}
-                className="w-12 h-12 rounded-xl bg-zinc-950 border border-white/5 text-muted hover:text-text hover:border-zinc-700 transition-colors flex items-center justify-center"
+                className="w-12 h-12 rounded-xl bg-white border border-zinc-200 text-muted hover:text-text hover:border-zinc-300 hover:bg-zinc-50 transition-all duration-300 flex items-center justify-center"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
               <button
                 onClick={handleNext}
-                className="w-12 h-12 rounded-xl bg-zinc-950 border border-white/5 text-muted hover:text-text hover:border-zinc-700 transition-colors flex items-center justify-center"
+                className="w-12 h-12 rounded-xl bg-white border border-zinc-200 text-muted hover:text-text hover:border-zinc-300 hover:bg-zinc-50 transition-all duration-300 flex items-center justify-center"
               >
                 <ChevronRight className="w-5 h-5" />
               </button>

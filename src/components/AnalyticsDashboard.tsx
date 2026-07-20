@@ -24,7 +24,6 @@ export default function AnalyticsDashboard() {
   const [realtimeLikes, setRealtimeLikes] = useState(362000);
   const [pulseMetric, setPulseMetric] = useState<string | null>(null);
 
-  // Increase numbers slightly to simulate a "live dashboard"
   useEffect(() => {
     const interval = setInterval(() => {
       const isFollowerInc = Math.random() > 0.4;
@@ -104,37 +103,54 @@ export default function AnalyticsDashboard() {
   const current = data[activeTab];
 
   return (
-    <section className="py-24 bg-[#050505] relative overflow-hidden" id="dashboard">
-      {/* Mesh Glow Background */}
-      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[500px] rounded-full bg-secondary/5 filter blur-[120px] pointer-events-none" />
+    <section className="py-20 sm:py-28 md:py-36 bg-background relative overflow-hidden section-glow-divider" id="dashboard">
+      {/* Mesh Glow Background — bigger */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[800px] h-[600px] rounded-full bg-secondary/[0.04] filter blur-[140px] pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
-        <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
-          <span className="text-xs font-bold uppercase tracking-[0.25em] text-primary">
+        <div className="text-center max-w-2xl mx-auto mb-16 md:mb-20 space-y-4">
+          <motion.span
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-xs font-bold uppercase tracking-[0.3em] text-primary"
+          >
             SaaS Content Engine
-          </span>
-          <h2 className="text-4xl sm:text-5xl font-extrabold font-heading text-text">
+          </motion.span>
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ type: 'spring', stiffness: 80, damping: 14, delay: 0.1 }}
+            className="text-4xl sm:text-5xl md:text-6xl font-extrabold font-heading text-text tracking-[-0.04em]"
+          >
             Live Analytics Dashboard
-          </h2>
-          <p className="text-muted font-light leading-relaxed text-sm md:text-base">
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="text-muted font-light leading-[1.6] text-sm md:text-base"
+          >
             Witness how our retention strategies drive real-time engagement loops, organic followers, and exponential reach.
-          </p>
+          </motion.p>
         </div>
 
-        {/* Dashboard Shell */}
-        <div className="glass-panel rounded-[32px] border border-white/8 overflow-hidden shadow-2xl">
+        {/* Dashboard Shell — Glass panel */}
+        <div className="glass-panel rounded-[32px] overflow-hidden shadow-layered-lg">
           {/* Dashboard Header / Tabs */}
-          <div className="flex flex-col sm:flex-row justify-between items-center bg-[#0a0a0c] border-b border-border px-8 py-4 gap-4">
+          <div className="flex flex-col sm:flex-row justify-between items-center bg-zinc-50 border-b border-zinc-200/80 px-4 sm:px-8 py-3 sm:py-4 gap-3 sm:gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-3 h-3 rounded-full bg-red-500 animate-pulse" />
-              <span className="text-xs font-bold font-heading uppercase tracking-wider text-muted">
+              <div className="w-3 h-3 rounded-full bg-red-500/80 animate-pulse" />
+              <span className="text-xs font-bold font-heading uppercase tracking-[0.15em] text-muted">
                 Shanva Live Performance Engine
               </span>
             </div>
             
-            {/* Tabs */}
-            <div className="flex gap-1.5 bg-zinc-950 p-1.5 rounded-2xl border border-white/5 overflow-x-auto max-w-full scrollbar-none shrink-0">
+            <div className="flex gap-1 bg-zinc-100 p-1.5 rounded-2xl border border-zinc-200/80 overflow-x-auto max-w-full scrollbar-none shrink-0">
               {[
                 { id: 'ig', name: 'Instagram', icon: <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg> },
                 { id: 'yt', name: 'YouTube', icon: <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 0 0-1.95 1.96A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.41 19c1.71.46 8.59.46 8.59.46s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg> },
@@ -146,8 +162,8 @@ export default function AnalyticsDashboard() {
                   onClick={() => setActiveTab(tab.id as any)}
                   className={`px-4 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all duration-300 ${
                     activeTab === tab.id
-                      ? 'bg-gradient-to-tr from-primary to-secondary text-text shadow-md'
-                      : 'text-zinc-400 hover:text-text hover:bg-white/5'
+                      ? 'bg-gradient-to-tr from-primary to-secondary text-white shadow-glow-sm'
+                      : 'text-zinc-500 hover:text-text hover:bg-zinc-800/[0.03]'
                   }`}
                 >
                   {tab.icon}
@@ -158,16 +174,15 @@ export default function AnalyticsDashboard() {
           </div>
 
           {/* Grid Layout inside Dashboard */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 p-4 sm:p-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 p-4 sm:p-8">
             {/* Left Metrics column (Span 4) */}
-            <div className="lg:col-span-4 space-y-6">
-              {/* Followers metric */}
-              <div className="p-6 bg-zinc-950 rounded-2xl border border-white/5 space-y-2 relative overflow-hidden">
+            <div className="lg:col-span-4 space-y-5">
+              <div className="p-6 bg-zinc-50 rounded-2xl border border-zinc-200/80 space-y-2 relative overflow-hidden">
                 <div className="flex justify-between items-center text-xs text-muted">
                   <span className="flex items-center gap-1.5">
                     <Users className="w-4 h-4 text-primary" /> Followers
                   </span>
-                  <span className="px-2 py-0.5 rounded bg-success/20 text-[10px] text-success font-semibold">
+                  <span className="px-2 py-0.5 rounded-md bg-success/15 text-[10px] text-success font-semibold">
                     {current.followersGrowth}
                   </span>
                 </div>
@@ -188,13 +203,12 @@ export default function AnalyticsDashboard() {
                 <p className="text-[10px] text-muted">Real-time follower compounding</p>
               </div>
 
-              {/* Impressions/Reach metric */}
-              <div className="p-6 bg-zinc-950 rounded-2xl border border-white/5 space-y-2">
+              <div className="p-6 bg-zinc-50 border border-zinc-200/80 rounded-2xl space-y-2">
                 <div className="flex justify-between items-center text-xs text-muted">
                   <span className="flex items-center gap-1.5">
                     <Eye className="w-4 h-4 text-secondary" /> Impressions
                   </span>
-                  <span className="px-2 py-0.5 rounded bg-primary/20 text-[10px] text-primary font-semibold">
+                  <span className="px-2 py-0.5 rounded-md bg-primary/15 text-[10px] text-primary font-semibold">
                     Viral Loop
                   </span>
                 </div>
@@ -204,13 +218,12 @@ export default function AnalyticsDashboard() {
                 <p className="text-[10px] text-muted">Organic content impressions (Jan-Jun)</p>
               </div>
 
-              {/* Engagement Rate */}
-              <div className="p-6 bg-zinc-950 rounded-2xl border border-white/5 space-y-2">
+              <div className="p-6 bg-zinc-50 border border-zinc-200/80 rounded-2xl space-y-2">
                 <div className="flex justify-between items-center text-xs text-muted">
                   <span className="flex items-center gap-1.5">
                     <BarChart2 className="w-4 h-4 text-accent" /> Engagement
                   </span>
-                  <span className="px-2 py-0.5 rounded bg-zinc-900 text-[10px] text-text font-semibold">
+                  <span className="px-2 py-0.5 rounded-md bg-zinc-200 text-[10px] text-text font-semibold">
                     Target: 4%
                   </span>
                 </div>
@@ -222,24 +235,21 @@ export default function AnalyticsDashboard() {
             </div>
 
             {/* Middle Graph Column (Span 5) */}
-            <div className="lg:col-span-5 bg-zinc-950 border border-white/5 rounded-2xl p-6 flex flex-col justify-between relative min-h-[300px]">
+            <div className="lg:col-span-5 bg-zinc-50 border border-zinc-200/80 rounded-2xl p-4 sm:p-6 flex flex-col justify-between relative min-h-[220px] sm:min-h-[260px] lg:min-h-[300px]">
               <div className="flex justify-between items-center">
                 <div>
-                  <h3 className="text-sm font-bold font-heading text-text">Reach Trend (Weekly)</h3>
+                  <h3 className="text-sm font-bold font-heading text-text tracking-[-0.01em]">Reach Trend (Weekly)</h3>
                   <p className="text-[10px] text-muted">Monthly targets hit ahead of schedule</p>
                 </div>
-                <span className="text-[11px] text-zinc-400 font-medium">Jan &mdash; Jun 2026</span>
+                <span className="text-[11px] text-zinc-400 font-medium">Jan - Jun 2026</span>
               </div>
 
-              {/* SVG Animated Chart */}
               <div className="h-44 w-full relative mt-4">
                 <svg className="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
-                  {/* Grid Lines */}
-                  <line x1="0" y1="20" x2="100" y2="20" stroke="rgba(255,255,255,0.03)" strokeWidth="0.5" />
-                  <line x1="0" y1="50" x2="100" y2="50" stroke="rgba(255,255,255,0.03)" strokeWidth="0.5" />
-                  <line x1="0" y1="80" x2="100" y2="80" stroke="rgba(255,255,255,0.03)" strokeWidth="0.5" />
+                  <line x1="0" y1="20" x2="100" y2="20" stroke="rgba(15,23,42,0.04)" strokeWidth="0.5" />
+                  <line x1="0" y1="50" x2="100" y2="50" stroke="rgba(15,23,42,0.04)" strokeWidth="0.5" />
+                  <line x1="0" y1="80" x2="100" y2="80" stroke="rgba(15,23,42,0.04)" strokeWidth="0.5" />
                   
-                  {/* Path */}
                   <AnimatePresence mode="wait">
                     <motion.path
                       key={activeTab}
@@ -254,18 +264,17 @@ export default function AnalyticsDashboard() {
                     />
                   </AnimatePresence>
 
-                  {/* Gradients */}
                   <defs>
                     <linearGradient id="chart-grad-stroke" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stopColor="#7C3AED" />
-                      <stop offset="50%" stopColor="#3B82F6" />
+                      <stop offset="0%" stopColor="#6366F1" />
+                      <stop offset="50%" stopColor="#0EA5E9" />
                       <stop offset="100%" stopColor="#EC4899" />
                     </linearGradient>
                   </defs>
                 </svg>
               </div>
 
-              <div className="flex justify-between text-[9px] text-muted pt-2 border-t border-white/5">
+              <div className="flex justify-between text-[9px] text-muted pt-2 border-t border-zinc-200/80">
                 <span>Week 1</span>
                 <span>Week 2</span>
                 <span>Week 3</span>
@@ -274,18 +283,17 @@ export default function AnalyticsDashboard() {
             </div>
 
             {/* Right Top Content Column (Span 3) */}
-            <div className="lg:col-span-3 space-y-6">
-              {/* Top Performing Asset */}
-              <div className="p-6 bg-zinc-950 border border-white/5 rounded-2xl space-y-4">
-                <span className="text-[10px] text-primary uppercase font-bold tracking-widest block">
+            <div className="lg:col-span-3 space-y-5">
+              <div className="p-6 bg-zinc-50 border border-zinc-200/80 rounded-2xl space-y-4">
+                <span className="text-[10px] text-primary uppercase font-bold tracking-[0.2em] block">
                   Top Performing Asset
                 </span>
                 
                 <div className="space-y-1">
-                  <h4 className="text-xs font-bold text-text line-clamp-2">
+                  <h4 className="text-xs font-bold text-text line-clamp-2 tracking-[-0.01em]">
                     {current.topContent.title}
                   </h4>
-                  <span className="text-[9px] text-muted px-2 py-0.5 rounded bg-white/5 inline-block">
+                  <span className="text-[9px] text-muted px-2 py-0.5 rounded-md bg-zinc-200/60 inline-block">
                     {current.topContent.type}
                   </span>
                 </div>
@@ -312,18 +320,17 @@ export default function AnalyticsDashboard() {
                 </div>
               </div>
 
-              {/* Geographic Insight */}
-              <div className="p-6 bg-zinc-950 border border-white/5 rounded-2xl space-y-2">
-                <span className="text-[10px] text-secondary uppercase font-bold tracking-widest block">
+              <div className="p-6 bg-zinc-50 border border-zinc-200/80 rounded-2xl space-y-2">
+                <span className="text-[10px] text-secondary uppercase font-bold tracking-[0.2em] block">
                   Primary Demographic
                 </span>
                 <div className="text-lg font-bold text-text font-heading">Hyderabad Local</div>
                 <div className="flex justify-between text-xs text-muted">
                   <span>Age dominant</span>
-                  <span className="text-text font-semibold">22–44 (65% M, 35% F)</span>
+                  <span className="text-text font-semibold">22-44 (65% M, 35% F)</span>
                 </div>
-                <div className="w-full bg-zinc-900 h-1.5 rounded-full overflow-hidden mt-2">
-                  <div className="bg-secondary h-full" style={{ width: '65%' }} />
+                <div className="w-full bg-zinc-200 h-1.5 rounded-full overflow-hidden mt-2">
+                  <div className="bg-gradient-to-r from-secondary to-primary h-full rounded-full" style={{ width: '65%' }} />
                 </div>
               </div>
             </div>

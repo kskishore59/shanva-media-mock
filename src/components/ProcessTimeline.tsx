@@ -6,7 +6,6 @@ export default function ProcessTimeline() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const [activeStep, setActiveStep] = useState(0);
 
-  // Monitor the scroll progress of the Process timeline section container
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start start", "end end"]
@@ -64,7 +63,6 @@ export default function ProcessTimeline() {
     }
   ];
 
-  // Map scroll progress (0 to 1) to active step index
   useEffect(() => {
     const unsubscribe = scrollYProgress.onChange((latest) => {
       const stepCount = steps.length;
@@ -79,17 +77,14 @@ export default function ProcessTimeline() {
     return () => unsubscribe();
   }, [scrollYProgress, activeStep, steps.length]);
 
-  // Scroll viewport smoothly to align with step index trigger points
   const handleNodeClick = (idx: number) => {
     if (!sectionRef.current) return;
     const rect = sectionRef.current.getBoundingClientRect();
     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     const sectionStart = rect.top + scrollTop;
     const sectionHeight = rect.height;
-    
-    // Position target is (idx / steps.length) of the scrolling distance
     const scrollRange = sectionHeight - window.innerHeight;
-    const targetScroll = sectionStart + (idx / steps.length) * scrollRange + 5; // offset slightly to lock
+    const targetScroll = sectionStart + (idx / steps.length) * scrollRange + 5;
     
     window.scrollTo({
       top: targetScroll,
@@ -98,36 +93,40 @@ export default function ProcessTimeline() {
   };
 
   return (
-    <div ref={sectionRef} className="relative h-[350vh] bg-background" id="process">
-      {/* Sticky container that keeps elements centered on scroll */}
+    <div ref={sectionRef} className="relative h-[250vh] sm:h-[300vh] md:h-[350vh] bg-background section-glow-divider" id="process">
       <div className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden py-4 sm:py-8">
         
-        {/* Background neon grid blob */}
-        <div className="absolute top-1/2 left-0 -translate-y-1/2 w-96 h-96 rounded-full bg-secondary/5 filter blur-3xl pointer-events-none" />
+        {/* Background glow — bigger */}
+        <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-secondary/[0.04] filter blur-[120px] pointer-events-none" />
 
         <div className="max-w-7xl mx-auto px-6 w-full">
           {/* Header */}
-          <div className="text-center max-w-2xl mx-auto mb-6 md:mb-16 space-y-2">
-            <span className="text-xs font-bold uppercase tracking-[0.25em] text-primary">
+          <div className="text-center max-w-2xl mx-auto mb-6 md:mb-16 space-y-3">
+            <motion.span
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="text-xs font-bold uppercase tracking-[0.3em] text-primary"
+            >
               Our Framework
-            </span>
-            <h2 className="text-2xl sm:text-4xl font-extrabold font-heading text-text tracking-tight">
+            </motion.span>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold font-heading text-text tracking-[-0.04em]">
               How We Build Virality
             </h2>
-            <p className="text-muted font-light leading-relaxed text-[11px] md:text-sm max-w-lg mx-auto">
+            <p className="text-muted font-light leading-[1.6] text-[11px] md:text-sm max-w-lg mx-auto">
               Scroll down to watch our process advance phase-by-phase, or click any stage to navigate.
             </p>
           </div>
 
           {/* Interactive Steps Navigation Track */}
           <div className="relative mb-6 md:mb-14 max-w-3xl mx-auto px-1 sm:px-0">
-            {/* Horizontal Line behind nodes (top offset aligned with node circle centers) */}
-            <div className="absolute top-[18px] sm:top-[24px] md:top-[28px] left-0 right-0 h-0.5 bg-zinc-800 z-0" />
+            <div className="absolute top-[18px] sm:top-[24px] md:top-[28px] left-0 right-0 h-0.5 bg-zinc-200/80 z-0" />
             
-            {/* Active Connector Progress based on current scroll */}
             <motion.div
-              className="absolute top-[18px] sm:top-[24px] md:top-[28px] left-0 h-0.5 bg-gradient-to-r from-primary to-secondary z-0 transition-all duration-300"
+              className="absolute top-[18px] sm:top-[24px] md:top-[28px] left-0 h-0.5 bg-gradient-to-r from-primary to-secondary z-0"
               style={{ width: `${(activeStep / (steps.length - 1)) * 100}%` }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             />
 
             <div className="relative z-10 flex justify-between items-center gap-1 sm:gap-4 overflow-x-auto pb-2 scrollbar-none">
@@ -141,12 +140,12 @@ export default function ProcessTimeline() {
                     className="flex flex-col items-center gap-1.5 min-w-[42px] sm:min-w-[70px] md:min-w-[85px] flex-shrink-0 group focus:outline-none"
                   >
                     <div
-                      className={`w-9 h-9 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center border transition-all duration-300 ${
+                      className={`w-9 h-9 sm:w-12 sm:h-12 md:w-14 md:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center border transition-all duration-400 ${
                         isActive
-                          ? 'bg-gradient-to-tr from-primary to-secondary text-text border-transparent shadow-lg shadow-primary/20 scale-110'
+                          ? 'bg-gradient-to-tr from-primary to-secondary text-white border-transparent shadow-glow-md scale-110'
                           : isPassed
-                          ? 'bg-zinc-900 text-primary border-primary/20'
-                          : 'bg-surface text-muted border-border hover:border-zinc-700 hover:text-text'
+                          ? 'bg-indigo-50 text-primary border-primary/20'
+                          : 'bg-surface border-border hover:border-zinc-300 hover:text-text text-muted'
                       }`}
                     >
                       {step.icon}
@@ -164,40 +163,40 @@ export default function ProcessTimeline() {
             </div>
           </div>
 
-          {/* Detail Card Panel with Slide reveals */}
+          {/* Detail Card Panel — Glass styling */}
           <div className="max-w-3xl mx-auto px-1 sm:px-0">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeStep}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -15 }}
-                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                className="glass-card rounded-3xl p-5 md:p-10 border border-white/5 grid grid-cols-1 md:grid-cols-12 gap-6 items-center shadow-xl min-h-[200px]"
+                initial={{ opacity: 0, y: 18, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: -18, scale: 0.98 }}
+                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                className="glass-card rounded-[28px] p-5 md:p-10 grid grid-cols-1 md:grid-cols-12 gap-6 items-center shadow-layered min-h-[200px]"
               >
                 {/* Left Details */}
-                <div className="md:col-span-8 space-y-2">
-                  <span className="text-[9px] font-bold text-secondary uppercase tracking-widest flex items-center gap-1.5">
+                <div className="md:col-span-8 space-y-3">
+                  <span className="text-[9px] font-bold text-secondary uppercase tracking-[0.25em] flex items-center gap-1.5">
                     <Zap className="w-3.5 h-3.5 animate-pulse" />
                     Step 0{activeStep + 1} &bull; {steps[activeStep].tagline}
                   </span>
-                  <h3 className="text-xl md:text-3xl font-extrabold font-heading text-text tracking-tight">
+                  <h3 className="text-xl md:text-3xl font-extrabold font-heading text-text tracking-[-0.03em]">
                     {steps[activeStep].title} Stage
                   </h3>
-                  <p className="text-xs text-muted font-light leading-relaxed">
+                  <p className="text-xs text-muted font-light leading-[1.6]">
                     {steps[activeStep].desc}
                   </p>
                 </div>
 
                 {/* Right Action Callout */}
                 <div className="md:col-span-4 flex justify-end">
-                  <div className="w-full p-4 rounded-2xl bg-zinc-950/90 border border-white/5 flex flex-col justify-between h-28 md:h-36">
-                    <span className="text-[8px] text-zinc-500 font-bold uppercase tracking-wider">
+                  <div className="w-full p-4 rounded-2xl bg-zinc-50 border border-zinc-200/80 flex flex-col justify-between h-28 md:h-36">
+                    <span className="text-[8px] text-zinc-500 font-bold uppercase tracking-[0.2em]">
                       Next phase
                     </span>
                     <div>
-                      <h4 className="text-xs font-bold text-text">
-                        {steps[activeStep + 1] ? steps[activeStep + 1].title : "Launch Day 🚀"}
+                      <h4 className="text-xs font-bold text-text tracking-[-0.01em]">
+                        {steps[activeStep + 1] ? steps[activeStep + 1].title : "Launch Day"}
                       </h4>
                       <p className="text-[9px] text-muted truncate">
                         {steps[activeStep + 1] ? steps[activeStep + 1].tagline : "Your brand goes viral"}

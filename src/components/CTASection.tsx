@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import type { RefObject } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Phone, Mail, Sparkles, CheckCircle2, Calendar } from 'lucide-react';
+import { CheckCircle2, ChevronDown } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { INTEGRATION_CONFIG } from '../config';
 
@@ -10,226 +10,277 @@ interface CTASectionProps {
 }
 
 export default function CTASection({ formRef }: CTASectionProps) {
-  const [formData, setFormData] = useState({ name: '', email: '', business: '', notes: '' });
-  const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  // Form state
+  const [projectData, setProjectData] = useState({
+    name: '',
+    brandName: '',
+    email: '',
+    phone: '',
+    industry: '',
+    serviceNeeded: '',
+    budgetRange: '',
+    timeline: '',
+    details: ''
+  });
+
+  const handleProjectSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.name || !formData.email) return;
+    if (!projectData.name || !projectData.email) return;
     setLoading(true);
     setErrorMsg('');
-    
+
     try {
-      // Live POST request to the Google Sheets Webhook / Endpoint
       await fetch(INTEGRATION_CONFIG.googleSheetsWebhookUrl, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type: 'project_brief', ...projectData }),
         mode: 'cors',
       });
-      
       setLoading(false);
       setSubmitted(true);
-      confetti({
-        particleCount: 150,
-        spread: 80,
-        origin: { y: 0.6 },
-        colors: ['#7C3AED', '#3B82F6', '#EC4899', '#22C55E']
-      });
-    } catch (err: any) {
-      console.warn("CORS warning, falling back to no-cors mode:", err);
-      // Fallback: POST in no-cors mode so the request still reaches Google Apps Script
+      triggerConfetti();
+    } catch {
       try {
         await fetch(INTEGRATION_CONFIG.googleSheetsWebhookUrl, {
           method: 'POST',
           mode: 'no-cors',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(formData),
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type: 'project_brief', ...projectData }),
         });
         setLoading(false);
         setSubmitted(true);
-        confetti({
-          particleCount: 150,
-          spread: 80,
-          origin: { y: 0.6 },
-          colors: ['#7C3AED', '#3B82F6', '#EC4899', '#22C55E']
-        });
-      } catch (fallbackErr) {
+        triggerConfetti();
+      } catch {
         setLoading(false);
-        setErrorMsg('Failed to submit form. Please call or email us directly.');
+        setErrorMsg('Failed to submit form. Please email us directly.');
       }
     }
   };
 
-  return (
-    <section ref={formRef} className="py-24 bg-background relative overflow-hidden" id="cta">
-      {/* Background blobs */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-mesh-footer filter blur-[150px] opacity-40 pointer-events-none" />
+  const triggerConfetti = () => {
+    confetti({
+      particleCount: 150,
+      spread: 80,
+      origin: { y: 0.6 },
+      colors: ['#6366F1', '#0EA5E9', '#EC4899', '#10B981']
+    });
+  };
 
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="relative rounded-[40px] overflow-hidden bg-zinc-950/80 border border-white/8 p-8 md:p-16 flex flex-col lg:flex-row justify-between items-center gap-12 shadow-2xl">
-          {/* Neon side borders */}
-          <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary via-secondary to-accent" />
+  return (
+    <section ref={formRef} className="py-20 sm:py-28 md:py-36 bg-background relative overflow-hidden section-glow-divider" id="cta">
+      {/* Background Radial Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] rounded-full bg-mesh-footer filter blur-[160px] opacity-10 pointer-events-none" />
+
+      <div className="max-w-3xl mx-auto px-6 relative z-10">
+        
+        {/* Form Container Card - Clean Centered Layout */}
+        <div className="bg-white border border-zinc-200/80 p-6 sm:p-8 md:p-12 rounded-[32px] shadow-layered text-center">
           
-          {/* Left Details */}
-          <div className="lg:w-1/2 space-y-6 text-left">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-bold text-secondary">
-              <Sparkles className="w-3.5 h-3.5 text-secondary animate-pulse" />
-              <span>Get Free Discovery Call</span>
-            </div>
-            <h2 className="text-4xl sm:text-5xl md:text-6xl font-black font-heading leading-tight text-text">
-              Ready to Become <br />
-              the Brand Everyone <br />
-              <span className="bg-gradient-to-r from-primary via-secondary to-accent bg-clip-text text-transparent animate-gradient-shift" style={{ backgroundSize: '200% auto' }}>
-                Talks About?
-              </span>
+          <div className="space-y-4 mb-8">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-black font-heading text-text tracking-[-0.04em]">
+              Let's Talk!
             </h2>
-            <p className="text-sm md:text-base text-muted font-light leading-relaxed max-w-md">
-              Book a 15-minute strategy call. We'll audit your current handles and outline a viral blueprint custom-fit for your brand.
+            <p className="text-sm text-muted font-light max-w-lg mx-auto">
+              Start with your project brief first. Tell us about your brand, goals, and what you're looking for, and we'll outline a viral growth blueprint.
             </p>
-            
-            <div className="space-y-4 pt-4 border-t border-white/5">
-              <div className="flex items-center gap-3 text-xs text-zinc-400">
-                <Phone className="w-4 h-4 text-primary" />
-                <span>+91 8977687916, +91 7416007557</span>
-              </div>
-              <div className="flex items-center gap-3 text-xs text-zinc-400">
-                <Mail className="w-4 h-4 text-secondary" />
-                <span>shanvamedia@gmail.com</span>
-              </div>
-            </div>
           </div>
 
-          {/* Right Form Card */}
-          <div className="lg:w-1/2 w-full">
-            <div className="glass-card rounded-3xl p-6 md:p-8 border border-white/5 relative">
-              <AnimatePresence mode="wait">
-                {!submitted ? (
-                  <motion.form
-                    key="form"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    onSubmit={handleSubmit}
-                    className="space-y-4"
+          <div className="w-full">
+            <AnimatePresence mode="wait">
+              {submitted ? (
+                <motion.div
+                  key="success"
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -15 }}
+                  className="py-10 space-y-5"
+                >
+                  <div className="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 flex items-center justify-center mx-auto">
+                    <CheckCircle2 className="w-6 h-6" />
+                  </div>
+                  <div className="space-y-2">
+                    <h3 className="text-xl font-bold font-heading text-emerald-600">
+                      Project Brief Saved!
+                    </h3>
+                    <p className="text-xs text-muted max-w-sm mx-auto leading-[1.6]">
+                      Thank you for sharing your details. We have logged your project brief and will audit your social handles shortly.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSubmitted(false);
+                      setProjectData({ name: '', brandName: '', email: '', phone: '', industry: '', serviceNeeded: '', budgetRange: '', timeline: '', details: '' });
+                    }}
+                    className="px-6 py-2.5 bg-zinc-100 hover:bg-zinc-200 rounded-xl text-xs font-semibold text-text transition-colors"
                   >
-                    <div className="space-y-1">
-                      <label className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider block">Full Name</label>
+                    Submit Another Brief
+                  </button>
+                </motion.div>
+              ) : (
+                /* Project Brief Form - Indian Rupees Options & Mobile-responsive */
+                <motion.form
+                  key="projectForm"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onSubmit={handleProjectSubmit}
+                  className="space-y-4 w-full text-left"
+                >
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-xs text-zinc-500 font-bold tracking-tight">Your Name</label>
                       <input
                         type="text"
                         required
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        value={projectData.name}
+                        onChange={(e) => setProjectData({ ...projectData, name: e.target.value })}
                         placeholder="Your Name"
-                        className="w-full bg-[#0a0a0c] border border-white/5 rounded-xl px-4 py-3 text-base md:text-sm text-text focus:outline-none focus:border-primary transition-colors placeholder:text-zinc-700"
+                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-sm text-text focus:outline-none focus:bg-white focus:border-primary/50 transition-all placeholder:text-zinc-400"
                       />
                     </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs text-zinc-500 font-bold tracking-tight">Brand Name</label>
+                      <input
+                        type="text"
+                        required
+                        value={projectData.brandName}
+                        onChange={(e) => setProjectData({ ...projectData, brandName: e.target.value })}
+                        placeholder="Brand Name"
+                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-sm text-text focus:outline-none focus:bg-white focus:border-primary/50 transition-all placeholder:text-zinc-400"
+                      />
+                    </div>
+                  </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="space-y-1">
-                        <label className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider block">Business Email</label>
-                        <input
-                          type="email"
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-xs text-zinc-500 font-bold tracking-tight">Email</label>
+                      <input
+                        type="email"
+                        required
+                        value={projectData.email}
+                        onChange={(e) => setProjectData({ ...projectData, email: e.target.value })}
+                        placeholder="you@company.com"
+                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-sm text-text focus:outline-none focus:bg-white focus:border-primary/50 transition-all placeholder:text-zinc-400"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs text-zinc-500 font-bold tracking-tight">Phone</label>
+                      <input
+                        type="tel"
+                        required
+                        value={projectData.phone}
+                        onChange={(e) => setProjectData({ ...projectData, phone: e.target.value })}
+                        placeholder="Phone number"
+                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-sm text-text focus:outline-none focus:bg-white focus:border-primary/50 transition-all placeholder:text-zinc-400"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-xs text-zinc-500 font-bold tracking-tight">Industry</label>
+                      <input
+                        type="text"
+                        value={projectData.industry}
+                        onChange={(e) => setProjectData({ ...projectData, industry: e.target.value })}
+                        placeholder="e.g. Food, Fashion, Real E..."
+                        className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-sm text-text focus:outline-none focus:bg-white focus:border-primary/50 transition-all placeholder:text-zinc-400"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs text-zinc-500 font-bold tracking-tight">Services Needed</label>
+                      <div className="relative">
+                        <select
                           required
-                          value={formData.email}
-                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                          placeholder="you@company.com"
-                          className="w-full bg-[#0a0a0c] border border-white/5 rounded-xl px-4 py-3 text-base md:text-sm text-text focus:outline-none focus:border-primary transition-colors placeholder:text-zinc-700"
-                        />
-                      </div>
-                      <div className="space-y-1">
-                        <label className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider block">Company / Brand Name</label>
-                        <input
-                          type="text"
-                          value={formData.business}
-                          onChange={(e) => setFormData({ ...formData, business: e.target.value })}
-                          placeholder="Brand Name"
-                          className="w-full bg-[#0a0a0c] border border-white/5 rounded-xl px-4 py-3 text-base md:text-sm text-text focus:outline-none focus:border-primary transition-colors placeholder:text-zinc-700"
-                        />
+                          value={projectData.serviceNeeded}
+                          onChange={(e) => setProjectData({ ...projectData, serviceNeeded: e.target.value })}
+                          className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 pr-10 text-sm text-text focus:outline-none focus:bg-white focus:border-primary/50 transition-all appearance-none cursor-pointer placeholder:text-zinc-400"
+                        >
+                          <option value="">Select a service</option>
+                          <option value="Branding & Design">Branding & Design</option>
+                          <option value="Websites & E-commerce">Websites & E-commerce</option>
+                          <option value="Online Marketing">Online Marketing</option>
+                          <option value="Content & Storytelling">Content & Storytelling</option>
+                          <option value="AI Content & Automation">AI Content & Automation</option>
+                          <option value="Social Media Management">Social Media Management</option>
+                          <option value="SEO & Analytics">SEO & Analytics</option>
+                          <option value="Video Production">Video Production</option>
+                        </select>
+                        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 pointer-events-none" />
                       </div>
                     </div>
+                  </div>
 
-                    <div className="space-y-1">
-                      <label className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider block">Current Social Handles / Goals</label>
-                      <textarea
-                        rows={3}
-                        value={formData.notes}
-                        onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                        placeholder="E.g., @brandname on Instagram. We want to double our organic reach."
-                        className="w-full bg-[#0a0a0c] border border-white/5 rounded-xl px-4 py-3 text-base md:text-sm text-text focus:outline-none focus:border-primary transition-colors placeholder:text-zinc-700 resize-none"
-                      />
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="text-xs text-zinc-500 font-bold tracking-tight">Budget Range</label>
+                      <div className="relative">
+                        <select
+                          required
+                          value={projectData.budgetRange}
+                          onChange={(e) => setProjectData({ ...projectData, budgetRange: e.target.value })}
+                          className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 pr-10 text-sm text-text focus:outline-none focus:bg-white focus:border-primary/50 transition-all appearance-none cursor-pointer"
+                        >
+                          <option value="">Select a range</option>
+                          <option value="< ₹50,000">Less than ₹50,000</option>
+                          <option value="₹50,000 - ₹1,50,000">₹50,000 - ₹1,50,000</option>
+                          <option value="₹1,50,000 - ₹3,00,000">₹1,50,000 - ₹3,00,000</option>
+                          <option value="₹3,00,000+">₹3,00,000+</option>
+                        </select>
+                        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 pointer-events-none" />
+                      </div>
                     </div>
+                    <div className="space-y-1.5">
+                      <label className="text-xs text-zinc-500 font-bold tracking-tight">Timeline</label>
+                      <div className="relative">
+                        <select
+                          required
+                          value={projectData.timeline}
+                          onChange={(e) => setProjectData({ ...projectData, timeline: e.target.value })}
+                          className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 pr-10 text-sm text-text focus:outline-none focus:bg-white focus:border-primary/50 transition-all appearance-none cursor-pointer"
+                        >
+                          <option value="">Select timeline</option>
+                          <option value="Immediate">Immediate</option>
+                          <option value="1-3 Months">1 - 3 Months</option>
+                          <option value="3+ Months">3+ Months</option>
+                        </select>
+                        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-500 pointer-events-none" />
+                      </div>
+                    </div>
+                  </div>
 
-                    {errorMsg && (
-                      <p className="text-xs text-red-500 font-medium">{errorMsg}</p>
-                    )}
+                  <div className="space-y-1.5">
+                    <label className="text-xs text-zinc-500 font-bold tracking-tight">Project Details</label>
+                    <textarea
+                      rows={4}
+                      required
+                      value={projectData.details}
+                      onChange={(e) => setProjectData({ ...projectData, details: e.target.value })}
+                      placeholder="Tell us about your brand, goals, and what you're looking for..."
+                      className="w-full bg-zinc-50 border border-zinc-200 rounded-xl px-4 py-3 text-sm text-text focus:outline-none focus:bg-white focus:border-primary/50 transition-all placeholder:text-zinc-400 resize-none resize-y"
+                    />
+                  </div>
 
-                    <button
-                      type="submit"
-                      disabled={loading}
-                      className="w-full py-4 rounded-xl text-center font-bold text-text bg-gradient-to-r from-primary via-secondary to-accent relative overflow-hidden group shadow-lg shadow-primary/10 flex items-center justify-center gap-2 hover:opacity-95 transition-opacity"
-                    >
-                      {loading ? (
-                        <span>Logging Details...</span>
-                      ) : (
-                        <>
-                          <Calendar className="w-4 h-4 text-text animate-pulse" />
-                          <span>Book a Strategy Call</span>
-                        </>
-                      )}
-                    </button>
-                  </motion.form>
-                ) : (
-                  <motion.div
-                    key="success"
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="text-center py-6 space-y-6 flex flex-col items-center justify-center"
+                  {errorMsg && <p className="text-xs text-red-500 font-medium">{errorMsg}</p>}
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="w-full py-4 rounded-xl text-center font-bold text-white btn-gradient-primary relative overflow-hidden group flex items-center justify-center gap-2 text-sm sm:text-base mt-2"
                   >
-                    <div className="w-16 h-16 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
-                      <CheckCircle2 className="w-8 h-8" />
-                    </div>
-                    <div className="space-y-2">
-                      <h3 className="text-xl font-bold font-heading text-emerald-400">Inquiry Logged!</h3>
-                      <p className="text-xs text-muted max-w-xs mx-auto leading-relaxed">
-                        Thank you, {formData.name}. We have saved your brand details. To lock in your strategy call session instantly, please select a calendar slot below:
-                      </p>
-                    </div>
-                    
-                    <a
-                      href={INTEGRATION_CONFIG.calendlyUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-2 px-8 py-3.5 rounded-xl bg-gradient-to-r from-primary to-secondary hover:from-secondary hover:to-accent text-text font-bold shadow-xl shadow-primary/20 hover:shadow-accent/20 transition-all duration-300 text-xs uppercase tracking-wider"
-                    >
-                      <Calendar className="w-4 h-4 text-text animate-bounce" />
-                      Pick Calendar Slot
-                    </a>
-
-                    <div className="pt-2">
-                      <button
-                        onClick={() => {
-                          setSubmitted(false);
-                          setFormData({ name: '', email: '', business: '', notes: '' });
-                          setErrorMsg('');
-                        }}
-                        className="text-[10px] text-zinc-500 hover:text-text underline"
-                      >
-                        or Submit Another Inquiry
-                      </button>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+                    {loading ? <span>Logging Details...</span> : <span>Send Project Brief</span>}
+                  </button>
+                </motion.form>
+              )}
+            </AnimatePresence>
           </div>
         </div>
+
       </div>
     </section>
   );

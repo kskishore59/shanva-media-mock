@@ -26,11 +26,6 @@ export default function App() {
     }
   };
 
-  const scrollToPortfolio = () => {
-    const portfolioElem = document.getElementById('portfolio');
-    portfolioElem?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
     <div className="relative min-h-screen bg-background text-text overflow-x-clip">
       {/* Premium custom cursor */}
@@ -43,7 +38,7 @@ export default function App() {
       <Navbar onContactClick={scrollToCTA} />
 
       {/* Hero Section */}
-      <Hero onContactClick={scrollToCTA} onWorkClick={scrollToPortfolio} />
+      <Hero onContactClick={scrollToCTA} />
 
       {/* Trusted-By Infinite Marquee */}
       <Marquee />
